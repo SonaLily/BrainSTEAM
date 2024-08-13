@@ -9,5 +9,9 @@ This project makes use of the ST-GCN model originally developed by the Multimedi
 
 - Original ST-GCN Repository: [ST-GCN](https://github.com/yysijie/st-gcn)
 - License: The original code is licensed under the following terms:
-  - [ST-GCN License](https://github.com/yysijie/st-gcn/blob/master/LICENSE)
+  - [BSD 2-Clause Simplified License](https://github.com/yysijie/st-gcn/blob/master/LICENSE)
 
+This project utilizes code from the SAGPool implementation available at the following repository:
+
+- **SAGPool: Self-Attention Graph Pooling**: [GitHub Repository](https://github.com/inyeoplee77/SAGPool)
+  - Original Author: Inyeop Lee
