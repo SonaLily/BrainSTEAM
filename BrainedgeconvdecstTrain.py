@@ -2,29 +2,16 @@ from BrainDataset_st import BrainDatasetst
 from util.prepossess import mixup_criterion, mixup_data,mixup_data2
 import random
 import shutil
-
-
 from sklearn.metrics import roc_curve, auc
 import numpy as np
-
-
 import torch
 torch.manual_seed(42)
-
 from torch import nn
-
 from torch_geometric.data import InMemoryDataset, Data, DataLoader
-
-
 from copy import deepcopy
 import pandas as pd
 
-
-
-
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-
 
 def brainedgedecsttrain(model, train_data, criterion, optimizer, n_epochs, batch_size, train_label):
 
@@ -37,7 +24,6 @@ def brainedgedecsttrain(model, train_data, criterion, optimizer, n_epochs, batch
 
             idx_batch = np.random.permutation(int(train_data.shape[0]))
             idx_batch = idx_batch[:int(batch_size)]
-
 
             W = train_data.shape[2];
             roi = train_data.shape[3];
@@ -52,20 +38,14 @@ def brainedgedecsttrain(model, train_data, criterion, optimizer, n_epochs, batch
             train_label_batch_dev = torch.from_numpy(train_label_batch).float().to(device)
             train_dataset = BrainDatasetst('ASD_data3.pyg', train_data_batch_dev,train_label_batch_dev)
             train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
-
             shutil.rmtree('ASD_data3.pyg')
-
 
             for i, data in enumerate(train_loader, 0):
 
                 mixed_x, mixed_edge_index, y_a, y_b, lam = mixup_data2(data)
-
                 data.x = mixed_x
                 data.edge_index = mixed_edge_index
-
                 outputs, x_decoder_1, x_decoder_2, x_decoder_3,degree_truth_1, degree_predict_1, degree_truth_2, degree_predict_2, degree_truth_3, degree_predict_3 = model(data)    #     data)
-
-
                 loss = mixup_criterion(criterion, outputs, y_a, y_b, lam)
                 degree_truth_1 = degree_truth_1.type(torch.LongTensor)
                 degree_truth_2 = degree_truth_2.type(torch.LongTensor)
@@ -76,14 +56,11 @@ def brainedgedecsttrain(model, train_data, criterion, optimizer, n_epochs, batch
 
                 loss_alpha = 0.1
                 loss_beta = 0.1
-
                 criterion2= nn.MSELoss()
 
                 loss_feature = 0.5*(criterion2(data.x, x_decoder_1)+criterion2(data.x, x_decoder_2)+criterion2(data.x, x_decoder_3))
                 loss_degree = 0.5*(criterion(degree_truth_1.float(), degree_predict_1.squeeze()) + criterion(degree_truth_2.float(), degree_predict_2.squeeze())+ criterion(degree_truth_3.float(), degree_predict_3.squeeze()))
                 loss = loss + loss_alpha * loss_feature  + loss_beta * loss_degree
-
-
 
                 loss.backward()
 
@@ -115,7 +92,6 @@ def test_test(model, test_data, batch_size, criterion, test_label, epoch=1):
 
         idx_batch = np.random.permutation(int(test_data.shape[0]))
         idx_batch = idx_batch[:int(batch_size)]
-
 
         W = test_data.shape[2];
         roi = test_data.shape[3];
@@ -167,12 +143,10 @@ def compute_metrics(ground_truth, prediction):
         metrics_dict = dict()
         metrics_dict['accuracy'] = (tp + tn) / (tp + tn + fp + fn)
 
-
         if tp + fn != 0:
             metrics_dict['sensitivity'] = tp / (tp + fn)
         else:
             metrics_dict['sensitivity'] = 0.0
-
 
         if fp + tn != 0:
             metrics_dict['specificity'] = tn / (fp + tn)
@@ -191,18 +165,15 @@ def compute_metrics(ground_truth, prediction):
         roc_auc = auc(fpr, tpr)
         metrics_dict['roc_auc'] = roc_auc
 
-
         if tp + fp != 0:
             metrics_dict['precision'] = tp / (tp + fp)
         else:
             metrics_dict['precision'] = 0.0
 
-
         if tp + fn != 0:
             metrics_dict['recall'] = tp / (tp + fn)
         else:
             metrics_dict['recall'] = 0.0
-
 
         if metrics_dict['precision'] + metrics_dict['recall'] != 0:
             metrics_dict['f1Score'] = 2 * (metrics_dict['precision'] * metrics_dict['recall']) / (
@@ -216,7 +187,6 @@ def compute_metrics(ground_truth, prediction):
 def test_train(model, train_data, batch_size, criterion, train_label, epoch=1):
 
     model.eval()
-
     columns = ["epoch", "idx", "proba0", "proba1",
                "true_label", "predicted_label"]
     results_df = pd.DataFrame(columns=columns)
@@ -224,7 +194,6 @@ def test_train(model, train_data, batch_size, criterion, train_label, epoch=1):
 
     idx_batch = np.random.permutation(int(train_data.shape[0]))
     idx_batch = idx_batch[:int(batch_size)]
-
 
     W = train_data.shape[2];
     roi = train_data.shape[3];
@@ -265,7 +234,6 @@ def test_train(model, train_data, batch_size, criterion, train_label, epoch=1):
 
     return results_df, results_metrics
 
-
 def compute_metrics(ground_truth, prediction):
 
     tp = np.sum((prediction == 1) & (ground_truth == 1))
@@ -275,7 +243,6 @@ def compute_metrics(ground_truth, prediction):
 
     metrics_dict = dict()
     metrics_dict['accuracy'] = (tp + tn) / (tp + tn + fp + fn)
-
 
     if tp + fn != 0:
         metrics_dict['sensitivity'] = tp / (tp + fn)
@@ -311,7 +278,6 @@ def compute_metrics(ground_truth, prediction):
     else:
         metrics_dict['recall'] = 0.0
 
-
     if metrics_dict['precision'] + metrics_dict['recall'] != 0:
         metrics_dict['f1Score'] = 2 * (metrics_dict['precision'] * metrics_dict['recall']) / (
                 metrics_dict['precision'] + metrics_dict['recall'])
@@ -329,16 +295,13 @@ def printcsv(FinalTestAccuracy,learning_rate,n_epochs,batch_size,train_metrics_d
         my_timezone = timezone('US/Mountain')
         starttime=starttime
 
-
         now = my_timezone.localize(now)
-
 
         date_time = now.strftime("%m/%d/%Y, %H:%M:%S")
         endtime = date_time
         import time
         timestr = time.strftime("%Y%m%d-%H%M%S")
         FinalTestAccuracy_str = str(FinalTestAccuracy)
-
 
         filePath = 'data/results/'
         extension = ".csv"
@@ -349,17 +312,13 @@ def printcsv(FinalTestAccuracy,learning_rate,n_epochs,batch_size,train_metrics_d
 
         output_file = filePath + FinalTestAccuracy_str + program_name + timestr + extension
 
-
         learning_rate_str = str(learning_rate)
         n_epochs_str = str(n_epochs)
         batch_size_str = str(batch_size)
 
 
-
         Program_info = [program_name, program_path, data_model, date_time]
         Hyperparameter_info = [learning_rate_str, n_epochs_str, batch_size_str, date_time]
-
-
 
         with open(output_file, 'w') as f:
             f.write('\n'.join(Program_info))
@@ -374,7 +333,6 @@ def printcsv(FinalTestAccuracy,learning_rate,n_epochs,batch_size,train_metrics_d
 
             f.write('Prediction Performance Metrics:')
             f.write('\n')
-
 
         with open(output_file, 'a') as f:
             f.write('\n')
