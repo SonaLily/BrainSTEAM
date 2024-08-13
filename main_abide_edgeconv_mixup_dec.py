@@ -178,7 +178,7 @@ if __name__ == '__main__':
         tags.extend(other_tags)
 
         for i in range(args.repeat_time):
-            wandb.login(key='9ebabdfa435a8c9db4b0f035d4aadaa7373d3823')
+            wandb.login(key='xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
             run = wandb.init(project="brain_abide_edgeconvdec", entity=args.wandb, reinit=True,
                              group=yaml_name, tags=tags)
             main(args)
