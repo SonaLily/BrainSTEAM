@@ -1,0 +1,13 @@
+## Acknowledgments
+
+This project uses a modified version of MixUp implementation from the following repository. The code has been modified for this project.
+
+- [MixUp: Beyond Empirical Risk Minimization](https://github.com/facebookresearch/mixup-cifar10)
+  - License: Creative Commons Attribution-NonCommercial 4.0 International Public License (see [LICENSE](https://github.com/facebookresearch/mixup-cifar10/blob/main/LICENSE))
+
+This project makes use of the ST-GCN model originally developed by the Multimedia Laboratory at The Chinese University of Hong Kong. The code has been modified for this project.
+
+- Original ST-GCN Repository: [ST-GCN](https://github.com/yysijie/st-gcn)
+- License: The original code is licensed under the following terms:
+  - [ST-GCN License](https://github.com/yysijie/st-gcn/blob/master/LICENSE)
+
